@@ -1,0 +1,42 @@
+trigger:
+  - main
+  - development
+
+pool:
+  name: 'Default'
+steps:
+  # Checkout the repository
+  - checkout: self
+
+    # Disable shallow fetch
+    fetchDepth: 0
+
+  # Prepare Analysis Configuration task
+  - task: SonarQubePrepare@7
+    inputs:
+      SonarQube: 'TuneQuestSonarqube'
+      scannerMode: 'other'
+      configFile: sonar-project.properties
+      extraProperties: |
+        # Additional properties that will be passed to the scanner,
+        # Put one key=value per line, example:
+        # sonar.exclusions=**/*.bin
+        sonar.projectKey=TuneQuestBackend_TuneQuestBackend_d9e0b50a-569f-49a0-bb80-a72eaa5e0e23
+        sonar.projectName=TuneQuestBackend
+
+  - task: Gradle@3
+    inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'build'
+        publishJUnitResults: true
+        testResultsFiles: '**/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        sonarQubeRunAnalysis: true
+        sqGradlePluginVersionChoice: 'specify'
+        sonarQubeGradlePluginVersion: '2.6.1'
+        spotBugsAnalysis: false
+
+ # Publish Quality Gate Result task
+  - task: SonarQubePublish@7
+    inputs:
+      pollingTimeoutSec: '300'

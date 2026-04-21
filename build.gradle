@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.2'
+    id 'io.spring.dependency-management' version '1.1.3'
+    id "org.sonarqube" version "5.0.0.4638"
+    id 'jacoco'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+    // HttpOnly Cookies
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+//    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+//    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+
+    // JMS and ActiveMQ Artemis support
+    implementation 'org.apache.activemq:artemis-jms-client:2.39.0'
+
+    // Spring Boot JMS Starter
+    implementation 'org.springframework.boot:spring-boot-starter-activemq'
+
+    // Application Insights
+    implementation 'com.microsoft.azure:applicationinsights-core:3.4.11'
+    implementation 'com.microsoft.azure:applicationinsights-spring-boot-starter:2.6.4'
+
+    //Test
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.0'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.11.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.apache.activemq:artemis-jms-client:2.28.0'
+
+
+    // CosmosDB
+    implementation 'com.azure:azure-cosmos:4.52.0'
+}
+
+tasks.test {
+    useJUnitPlatform()
+    reports {
+        junitXml.required.set(true)
+        junitXml.outputLocation.set(layout.buildDirectory.dir("test-results/test"))
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+    dependsOn test
+}
+
+tasks.named('sonar').configure {
+    dependsOn jacocoTestReport
+}
+
+sonar {
+    properties {
+        property "sonar.projectKey", "TuneQuestBackend_TuneQuestBackend_d9e0b50a-569f-49a0-bb80-a72eaa5e0e23"
+        property "sonar.projectName", "TuneQuestBackend"
+        property "sonar.token", "sqp_f5b9a97406689f1a356d937d6c69a7c83c3b1b0a"
+        property "sonar.qualitygate.wait", true
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.coverage.inclusions", "**/service/**"
+    }
+}
