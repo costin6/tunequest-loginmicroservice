@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class CosmosConfig {
 
     private static final String ENDPOINT = "https://tunequestdb.documents.azure.com:443/";
-    private static final String KEY = "mg8batufAkz57wiwMqMV7jAfEbbFfMnNXdBfa4o0drydMsMpxuaR5ZdCrlMCLbGBLSpdIUkuYbLcACDbW8Worg==";           // Replace with your Cosmos DB primary key
+    private static final String KEY = "SECRET";           // Replace with your Cosmos DB primary key
     private static final String DATABASE_NAME = "tunequestdb";
     private static final String CONTAINER_NAME = "user_data";
 
